@@ -41,32 +41,67 @@ $candidates = $stmt->fetchAll();
 </head>
 <body>
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-8">
-                <h2>候选人列表</h2>
-                <div class="row">
-                    <?php foreach ($candidates as $candidate): ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <img src="<?= htmlspecialchars($candidate['image_url']) ?>" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= htmlspecialchars($candidate['name']) ?></h5>
-                                <p class="vote-count">当前票数: <span id="votes-<?= $candidate['id'] ?>"><?= $candidate['vote_count'] ?></span></p>
-                                <button class="btn btn-primary vote-btn" data-id="<?= $candidate['id'] ?>">投票</button>
-                            </div>
-                        </div>
+        <h2 class="mb-4">实时投票结果</h2>
+        <div id="voteBarChart"></div>
+        
+        <div class="row mt-5">
+            <?php foreach ($candidates as $candidate): ?>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="<?= htmlspecialchars($candidate['image_url']) ?>" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= htmlspecialchars($candidate['name']) ?></h5>
+                        <p class="vote-count">当前票数: <span id="votes-<?= $candidate['id'] ?>"><?= $candidate['vote_count'] ?></span></p>
+                        <button class="btn btn-primary vote-btn" data-id="<?= $candidate['id'] ?>">投票</button>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
-            <div class="col-md-4">
-                <h2>实时投票结果</h2>
-                <canvas id="voteChart"></canvas>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
     <script>
+    // 初始化图表
+    const chart = new Chart(document.getElementById('voteBarChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',  // 横向条形图
+            animation: {
+                duration: 1000  // 动画持续时间
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // 更新图表数据
+    function updateChart(data) {
+        // 按票数排序
+        data.sort((a, b) => b.vote_count - a.vote_count);
+        
+        // 更新图表数据
+        chart.data.labels = data.map(c => c.name);
+        chart.data.datasets[0].data = data.map(c => c.vote_count);
+        chart.update();
+    }
+
     // 实时更新投票数据
     function updateVotes() {
         fetch('get_votes.php')
@@ -102,27 +137,6 @@ $candidates = $stmt->fetchAll();
                 }
             });
         });
-    });
-
-    // 初始化图表
-    const ctx = document.getElementById('voteChart').getContext('2d');
-    const voteChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: <?= json_encode(array_column($candidates, 'name')) ?>,
-            datasets: [{
-                label: '票数',
-                data: <?= json_encode(array_column($candidates, 'vote_count')) ?>,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)'
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
     });
     </script>
 </body>
