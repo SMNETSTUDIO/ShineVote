@@ -2,19 +2,32 @@
 session_start();
 require_once 'config.php';
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
     
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
-    
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['is_admin'] = $user['is_admin'];
-        header('Location: index.php');
-        exit;
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+        
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['is_admin'] = $user['is_admin'];
+            // 根据用户类型重定向到不同页面
+            if ($user['is_admin']) {
+                header('Location: admin.php');
+            } else {
+                header('Location: dashboard.php'); // 或其他用户首页
+            }
+            exit;
+        } else {
+            $error = '用户名或密码错误';
+        }
+    } catch(PDOException $e) {
+        $error = '系统错误，请稍后再试';
     }
 }
 ?>
@@ -32,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="card">
                     <div class="card-header">登录</div>
                     <div class="card-body">
+                        <?php if ($error): ?>
+                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                        <?php endif; ?>
                         <form method="POST">
                             <div class="mb-3">
                                 <label>用户名</label>
