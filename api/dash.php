@@ -68,7 +68,7 @@ $candidates = $stmt->fetchAll();
         <div class="card mb-4">
             <div class="card-body">
                 <h4 class="card-title">实时投票结果</h4>
-                <div id="voteBarChart" style="height: 300px;"></div>
+                <canvas id="voteBarChart" style="height: 300px;"></canvas>
             </div>
         </div>
         
