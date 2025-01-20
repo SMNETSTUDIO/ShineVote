@@ -16,11 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['is_admin'] = $user['is_admin'];
-            // 根据用户类型重定向到不同页面
+            
+            // 生成并存储token
+            $token = uniqid(rand(), true);
+            $stmt = $pdo->prepare("INSERT INTO user_tokens (user_id, token) VALUES (?, ?)");
+            $stmt->execute([$user['id'], $token]);
+            
+            // 设置cookie，过期时间7天
+            setcookie('auth_token', $token, time() + (7 * 24 * 60 * 60), '/');
+            
             if ($user['is_admin']) {
                 header('Location: /api/admin.php');
             } else {
-                header('Location: /api/dashboard.php'); // 或其他用户首页
+                header('Location: /api/dashboard.php');
             }
             exit;
         } else {

@@ -1,11 +1,32 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || !$_SESSION['is_admin']) {
+require_once 'config.php';
+
+// 验证token和管理员权限
+$auth_token = $_COOKIE['auth_token'] ?? '';
+if (!$auth_token) {
     header('Location: login.php');
     exit;
 }
 
-require_once 'config.php';
+// 通过token获取用户信息
+$stmt = $pdo->prepare("
+    SELECT u.* 
+    FROM users u 
+    JOIN user_tokens t ON u.id = t.user_id 
+    WHERE t.token = ? 
+    LIMIT 1
+");
+$stmt->execute([$auth_token]);
+$user = $stmt->fetch();
+
+if (!$user || !$user['is_admin']) {
+    header('Location: login.php');
+    exit;
+}
+
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['is_admin'] = $user['is_admin'];
 
 // 获取用户列表
 $stmt = $pdo->query("SELECT * FROM users WHERE is_admin = 0");
