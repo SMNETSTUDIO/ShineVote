@@ -184,6 +184,9 @@ $candidates = $stmt->fetchAll();
             });
         });
     });
+
+    // 页面加载完成后立即更新一次数据
+    updateVotes();
     </script>
 </body>
 </html>
