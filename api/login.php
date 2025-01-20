@@ -24,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             exit;
         } else {
-            $error = '用户名或密码错误';
+            $error = '用户名或密码错误！';
         }
     } catch(PDOException $e) {
-        $error = '系统错误，请稍后再试';
+        $error = '系统错误，请稍后再试！';
     }
 }
 ?>
