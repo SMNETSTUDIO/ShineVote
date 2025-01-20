@@ -20,11 +20,10 @@ $stmt->execute([$auth_token]);
 $admin = $stmt->fetch();
 
 if (!$admin) {
-    header('Location: login.php');
+    header('Location: /api/login.php');
     exit;
 }
 
-// 获取用户列表
 $stmt = $pdo->query("SELECT * FROM users WHERE is_admin = 0");
 $users = $stmt->fetchAll();
 ?>

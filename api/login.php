@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($user['is_admin']) {
                 header('Location: /api/admin.php');
             } else {
-                header('Location: /api/dashboard.php');
+                header('Location: /api/dash.php');
             }
             exit;
         } else {

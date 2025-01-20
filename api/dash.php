@@ -1,12 +1,30 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
+require_once 'config.php';
+
+// 验证token
+$auth_token = $_COOKIE['auth_token'] ?? '';
+if (!$auth_token) {
+    header('Location: /api/login.php');
+    exit;
+}
+
+// 通过token获取用户信息
+$stmt = $pdo->prepare("
+    SELECT u.* 
+    FROM users u 
+    JOIN user_tokens t ON u.id = t.user_id 
+    WHERE t.token = ?
+    LIMIT 1
+");
+$stmt->execute([$auth_token]);
+$user = $stmt->fetch();
+
+if (!$user) {
     header('Location: login.php');
     exit;
 }
 
-require_once 'config.php';
-
+// 获取候选人和投票数据
 $stmt = $pdo->query("SELECT c.*, COUNT(v.id) as vote_count 
                      FROM candidates c 
                      LEFT JOIN votes v ON c.id = v.candidate_id 
