@@ -76,9 +76,6 @@ $candidates = $stmt->fetchAll();
             <?php foreach ($candidates as $candidate): ?>
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <?php if ($candidate['image_url']): ?>
-                        <img src="<?= htmlspecialchars($candidate['image_url']) ?>" class="card-img-top" alt="<?= htmlspecialchars($candidate['name']) ?>" style="height: 200px; object-fit: cover;">
-                    <?php endif; ?>
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($candidate['name']) ?></h5>
                         <p class="card-text vote-count">当前票数: <span id="votes-<?= $candidate['id'] ?>"><?= $candidate['vote_count'] ?></span></p>
