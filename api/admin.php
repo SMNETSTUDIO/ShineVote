@@ -99,7 +99,6 @@ $candidates = $stmt->fetchAll();
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>图片</th>
                             <th>名称</th>
                             <th>当前票数</th>
                             <th>操作</th>
@@ -109,7 +108,6 @@ $candidates = $stmt->fetchAll();
                         <?php foreach ($candidates as $candidate): ?>
                         <tr>
                             <td><?= $candidate['id'] ?></td>
-                            <td><img src="<?= htmlspecialchars($candidate['image_url']) ?>" height="50"></td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" 
                                        value="<?= htmlspecialchars($candidate['name']) ?>"
@@ -118,9 +116,6 @@ $candidates = $stmt->fetchAll();
                             <td><?= $candidate['vote_count'] ?? 0 ?></td>
                             <td>
                                 <button class="btn btn-sm btn-info" onclick="resetVotes(<?= $candidate['id'] ?>)">重置票数</button>
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" 
-                                        data-bs-target="#editImageModal" 
-                                        onclick="setEditImageId(<?= $candidate['id'] ?>)">更换图片</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteCandidate(<?= $candidate['id'] ?>)">删除</button>
                             </td>
                         </tr>
@@ -155,33 +150,7 @@ $candidates = $stmt->fetchAll();
                             <label>名称</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label>图片</label>
-                            <input type="file" name="image" class="form-control" required accept="image/*">
-                        </div>
                         <button type="submit" class="btn btn-primary">添加</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 更换图片模态框 -->
-    <div class="modal fade" id="editImageModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">更换图片</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editImageForm">
-                        <input type="hidden" name="candidate_id" id="editImageCandidateId">
-                        <div class="mb-3">
-                            <label>新图片</label>
-                            <input type="file" name="image" class="form-control" required accept="image/*">
-                        </div>
-                        <button type="submit" class="btn btn-primary">更新</button>
                     </form>
                 </div>
             </div>
@@ -364,28 +333,6 @@ $candidates = $stmt->fetchAll();
         const formData = new FormData(this);
         
         fetch('add_candidate.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
-    };
-
-    // 设置要编辑的候选人ID
-    function setEditImageId(id) {
-        document.getElementById('editImageCandidateId').value = id;
-    }
-
-    // 更新候选人图片
-    document.getElementById('editImageForm').onsubmit = function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        fetch('update_candidate_image.php', {
             method: 'POST',
             body: formData
         })
