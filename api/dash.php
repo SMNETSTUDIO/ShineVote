@@ -148,7 +148,7 @@ $candidates = $stmt->fetchAll();
     }
 
     // 每5秒更新一次数据
-    setInterval(updateVotes, 5000);
+    setInterval(updateVotes, 500);
 
     // 投票按钮点击事件
     document.querySelectorAll('.vote-btn').forEach(btn => {
@@ -185,7 +185,6 @@ $candidates = $stmt->fetchAll();
         });
     });
 
-    // 页面加载完成后立即更新一次数据
     updateVotes();
     </script>
 </body>
