@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['is_admin'] = $user['is_admin'];
             // 根据用户类型重定向到不同页面
             if ($user['is_admin']) {
-                header('Location: admin.php');
+                header('Location: /api/admin.php');
             } else {
-                header('Location: dashboard.php'); // 或其他用户首页
+                header('Location: /api/dashboard.php'); // 或其他用户首页
             }
             exit;
         } else {
