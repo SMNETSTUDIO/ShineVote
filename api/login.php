@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'config.php';
 
 $error = '';
@@ -14,9 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['is_admin'] = $user['is_admin'];
-            
             // 生成并存储token
             $token = uniqid(rand(), true);
             $stmt = $pdo->prepare("INSERT INTO user_tokens (user_id, token) VALUES (?, ?)");
