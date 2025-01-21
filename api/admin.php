@@ -37,9 +37,122 @@ $candidates = $stmt->fetchAll();
 <head>
     <title>管理后台</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+            border: none;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s;
+        }
+        .nav-tabs .nav-link:hover {
+            border: none;
+            color: #0056b3;
+        }
+        .nav-tabs .nav-link.active {
+            color: #0056b3;
+            background: none;
+            border: none;
+            border-bottom: 2px solid #0056b3;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 1rem;
+        }
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-primary:hover {
+            background-color: #003d82;
+            border-color: #003d82;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .form-select {
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+        }
+        .modal-header {
+            background-color: #1a1a1a;
+            color: white;
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        .tab-pane {
+            padding: 2rem;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <nav class="navbar">
+        <div class="container">
+            <span class="navbar-brand">投票系统管理后台</span>
+            <a href="logout.php" class="btn btn-outline-light">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#users">用户管理</a>

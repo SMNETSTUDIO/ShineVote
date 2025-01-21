@@ -44,30 +44,93 @@ $candidates = $stmt->fetchAll();
     <title>投票系统</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .user-info {
+            color: #fff;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background-color: #1a1a1a;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-primary:hover {
+            background-color: #003d82;
+            border-color: #003d82;
+        }
+        .btn-outline-danger {
+            color: #fff;
+            border-color: #fff;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .vote-count {
+            color: #0056b3;
+            font-weight: bold;
+        }
+        .alert {
+            border: none;
+            border-radius: 8px;
+        }
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>投票系统</h2>
-            <div>
+    <nav class="navbar">
+        <div class="container">
+            <span class="navbar-brand">投票系统</span>
+            <div class="user-info">
                 <span class="me-3">欢迎，<?= htmlspecialchars($user['username']) ?></span>
                 <a href="logout.php" class="btn btn-outline-danger">退出登录</a>
             </div>
         </div>
+    </nav>
 
+    <div class="container">
         <?php if ($userVote): ?>
             <div class="alert alert-info">
-                您已经完成投票，感谢参与！
+                <i class="fas fa-check-circle"></i> 您已经完成投票，感谢参与！
             </div>
         <?php else: ?>
             <div class="alert alert-warning">
-                您还未投票，请为您支持的候选人投票！
+                <i class="fas fa-exclamation-circle"></i> 您还未投票，请为您支持的候选人投票！
             </div>
         <?php endif; ?>
 
         <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title">实时投票结果</h4>
+            <div class="card-header">实时投票结果</div>
+            <div class="card-body chart-container">
                 <canvas id="voteBarChart" style="height: 300px;"></canvas>
             </div>
         </div>
@@ -76,8 +139,8 @@ $candidates = $stmt->fetchAll();
             <?php foreach ($candidates as $candidate): ?>
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
+                    <div class="card-header"><?= htmlspecialchars($candidate['name']) ?></div>
                     <div class="card-body">
-                        <h5 class="card-title"><?= htmlspecialchars($candidate['name']) ?></h5>
                         <p class="card-text vote-count">当前票数: <span id="votes-<?= $candidate['id'] ?>"><?= $candidate['vote_count'] ?></span></p>
                         <button class="btn btn-primary vote-btn w-100" 
                                 data-id="<?= $candidate['id'] ?>"
