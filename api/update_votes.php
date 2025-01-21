@@ -24,10 +24,10 @@ if (!$admin) {
 }
 
 // 获取参数
-$candidate_id = $_POST['candidate_id'] ?? '';
-$votes = $_POST['votes'] ?? '';
+$candidate_id = filter_input(INPUT_POST, 'candidate_id', FILTER_VALIDATE_INT);
+$votes = filter_input(INPUT_POST, 'votes', FILTER_VALIDATE_INT);
 
-if (!$candidate_id || !is_numeric($votes) || $votes < 0) {
+if ($candidate_id === false || $candidate_id === null || $votes === false || $votes === null || $votes < 0) {
     echo json_encode(['success' => false, 'message' => '参数无效']);
     exit;
 }
@@ -36,17 +36,19 @@ try {
     // 开始事务
     $pdo->beginTransaction();
     
-    // 先删除现有票数
-    $stmt = $pdo->prepare("DELETE FROM votes WHERE candidate_id = ?");
-    $stmt->execute([$candidate_id]);
+    // 验证候选人是否存在并更新票数
+    $stmt = $pdo->prepare("
+        UPDATE candidates 
+        SET votes_count = ? 
+        WHERE id = ?
+    ");
     
-    // 获取系统管理员用户ID
-    $admin_id = $admin['id'];
+    if (!$stmt->execute([$votes, $candidate_id])) {
+        throw new Exception('更新失败');
+    }
     
-    // 插入新的票数
-    $stmt = $pdo->prepare("INSERT INTO votes (candidate_id, user_id) VALUES (?, ?)");
-    for ($i = 0; $i < $votes; $i++) {
-        $stmt->execute([$candidate_id, $admin_id]); // 使用管理员ID代替0
+    if ($stmt->rowCount() === 0) {
+        throw new Exception('候选人不存在');
     }
     
     // 提交事务
