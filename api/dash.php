@@ -30,11 +30,13 @@ $stmt->execute([$user['id']]);
 $userVote = $stmt->fetch();
 
 // 获取候选人和投票数据
-$stmt = $pdo->query("SELECT c.*, COUNT(v.id) as vote_count 
-                     FROM candidates c 
-                     LEFT JOIN votes v ON c.id = v.candidate_id 
-                     GROUP BY c.id 
-                     ORDER BY vote_count DESC");
+$stmt = $pdo->query("
+    SELECT c.*, COUNT(v.id) as vote_count 
+    FROM candidates c 
+    LEFT JOIN votes v ON c.id = v.candidate_id 
+    GROUP BY c.id 
+    ORDER BY COUNT(v.id) DESC
+");
 $candidates = $stmt->fetchAll();
 ?>
 

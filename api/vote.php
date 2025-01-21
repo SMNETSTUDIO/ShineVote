@@ -63,21 +63,6 @@ try {
     $stmt = $pdo->prepare("INSERT INTO votes (user_id, candidate_id, created_at) VALUES (?, ?, NOW())");
     $stmt->execute([$user['id'], $candidate_id]);
     
-    // 更新候选人票数
-    $stmt = $pdo->prepare("
-        UPDATE candidates 
-        SET vote_count = vote_count + 1 
-        WHERE id = ?
-    ");
-    
-    if (!$stmt->execute([$candidate_id])) {
-        throw new Exception('更新票数失败');
-    }
-    
-    if ($stmt->rowCount() === 0) {
-        throw new Exception('候选人不存在');
-    }
-    
     // 提交事务
     $pdo->commit();
     
