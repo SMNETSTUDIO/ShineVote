@@ -137,6 +137,7 @@ $candidates = $stmt->fetchAll();
         @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
+                max-width: 100%;
             }
             
             .navbar {
@@ -152,37 +153,84 @@ $candidates = $stmt->fetchAll();
                 flex-direction: column;
                 align-items: flex-end;
                 gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .user-info .btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .col-md-4 {
+                width: 100%;
+                padding: 0 0.5rem;
             }
             
             .card {
-                margin-bottom: 1rem;
+                margin-bottom: 0.8rem;
             }
             
             .card-header {
-                padding: 0.8rem 1rem;
+                padding: 0.8rem;
+                font-size: 1rem;
             }
             
             .card-body {
-                padding: 1rem;
+                padding: 0.8rem;
             }
             
             .vote-count {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+                margin-bottom: 0.8rem;
             }
             
             .alert {
-                padding: 0.8rem 1rem;
-                margin-bottom: 1rem;
+                padding: 0.8rem;
+                margin: 0.5rem 0;
+                font-size: 0.9rem;
             }
             
             .chart-container {
                 padding: 0.8rem;
-                margin-bottom: 1rem;
+                margin: 0.5rem 0 1rem 0;
+                height: 200px !important;
+            }
+            
+            canvas {
+                height: 200px !important;
+            }
+            
+            .btn-primary {
+                padding: 0.5rem;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .user-info {
+                font-size: 0.85rem;
+            }
+            
+            .card-header {
+                font-size: 0.95rem;
+            }
+            
+            .vote-count {
+                font-size: 1rem;
+            }
+            
+            .alert {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <nav class="navbar">
         <div class="container">
             <span class="navbar-brand"><?= htmlspecialchars($settings['voting_name']) ?></span>

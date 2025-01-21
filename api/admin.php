@@ -211,70 +211,129 @@ $totalVotes = $stmt->fetch()['total_votes'];
         @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
+                max-width: 100%;
             }
             
-            .navbar {
-                padding: 0.5rem;
+            .navbar .container {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: stretch;
             }
             
             .navbar-brand {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+                text-align: center;
+            }
+            
+            .navbar .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
             }
             
             .nav-tabs {
-                margin-top: 1rem;
+                margin-top: 0.8rem;
                 flex-wrap: nowrap;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                gap: 0.3rem;
+                padding: 0.5rem 0;
             }
             
             .nav-tabs .nav-link {
-                padding: 0.8rem 1rem;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
                 white-space: nowrap;
             }
             
             .tab-content {
-                padding: 1rem;
+                padding: 0.8rem;
+            }
+            
+            .row {
+                margin: 0 -0.5rem;
+            }
+            
+            .col-md-4 {
+                padding: 0 0.5rem;
             }
             
             .stats-card {
-                margin-bottom: 1rem;
+                padding: 1rem;
+                margin-bottom: 0.8rem;
             }
             
-            .card {
-                margin-bottom: 1rem;
+            .stats-card h6 {
+                font-size: 0.85rem;
+            }
+            
+            .stats-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .table-responsive {
+                margin: 0 -0.8rem;
+                padding: 0 0.8rem;
+                width: calc(100% + 1.6rem);
             }
             
             .table {
-                display: block;
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
+                font-size: 0.9rem;
             }
             
-            .table thead th,
+            .table thead th {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            
             .table tbody td {
-                padding: 0.8rem;
-                min-width: 120px;
+                padding: 0.6rem;
+            }
+            
+            .form-control, .form-select {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.9rem;
             }
             
             .btn {
-                padding: 0.5rem 0.8rem;
+                padding: 0.4rem 0.8rem;
                 font-size: 0.9rem;
             }
             
             .modal-body {
-                padding: 1rem;
+                padding: 0.8rem;
             }
             
-            .form-control,
-            .form-select {
-                padding: 0.5rem 0.8rem;
+            .modal-header {
+                padding: 0.8rem;
+            }
+            
+            .modal-title {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .nav-tabs .nav-link {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.6rem;
+            }
+            
+            .stats-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .table {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <nav class="navbar">
         <div class="container">
             <span class="navbar-brand">投票系统管理后台</span>
@@ -753,4 +812,5 @@ $totalVotes = $stmt->fetch()['total_votes'];
     }
     </script>
 </body>
+</html> 
 </html> 

@@ -122,17 +122,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 1.5rem !important;
         }
         @media (max-width: 768px) {
-            .container {
+            body {
                 padding: 1rem;
             }
             
+            .container {
+                padding: 0;
+                width: 100%;
+            }
+            
+            .col-md-5 {
+                padding: 0;
+                width: 100%;
+            }
+            
             .system-title {
-                font-size: 1.8rem;
+                font-size: 2rem;
                 margin-bottom: 1.5rem;
             }
             
             .card {
-                margin: 0 0.5rem;
+                margin: 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             }
             
             .card-header {
@@ -141,25 +152,74 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             
             .card-body {
-                padding: 1.5rem 1rem;
+                padding: 1.2rem;
             }
             
             .form-control {
                 padding: 0.6rem 1rem;
+                font-size: 0.95rem;
+                height: auto;
             }
             
             .btn-primary {
-                padding: 0.6rem;
+                padding: 0.8rem;
+                font-size: 1rem;
             }
             
             .alert {
-                padding: 0.8rem 1rem;
+                padding: 0.8rem;
+                font-size: 0.9rem;
                 margin-bottom: 1rem;
+            }
+            
+            label {
+                font-size: 0.9rem;
+                margin-bottom: 0.4rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 0.8rem;
+            }
+            
+            .system-title {
+                font-size: 1.8rem;
+                margin-bottom: 1.2rem;
+            }
+            
+            .card-header {
+                padding: 0.8rem;
+                font-size: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .form-control {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .btn-primary {
+                padding: 0.7rem;
+                font-size: 0.95rem;
+            }
+            
+            .alert {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+            
+            label {
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
