@@ -40,47 +40,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9f0 100%);
             height: 100vh;
             display: flex;
             align-items: center;
         }
         .card {
-            border: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
         .card-header {
-            background-color: #1a1a1a;
-            color: white;
-            font-size: 1.25rem;
-            font-weight: bold;
-            padding: 1rem;
-            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
         }
         .card-body {
             padding: 2rem;
         }
         .form-control {
-            border-radius: 8px;
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
         }
         .form-control:focus {
             border-color: #0056b3;
             box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
         }
         .btn-primary {
-            background-color: #0056b3;
-            border-color: #0056b3;
-            padding: 0.75rem;
-            width: 100%;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: all 0.3s;
+            background: linear-gradient(135deg, #0056b3 0%, #0088ff 100%);
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
         .btn-primary:hover {
             background-color: #003d82;
@@ -93,9 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .system-title {
             text-align: center;
-            color: #1a1a1a;
-            font-size: 2rem;
-            font-weight: bold;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            font-weight: 800;
             margin-bottom: 2rem;
         }
         label {

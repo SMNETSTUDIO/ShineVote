@@ -1,10 +1,8 @@
 <?php
 require_once 'config.php';
 
-// 设置响应头
 header('Content-Type: application/json');
 
-// 验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '未登录']);
@@ -26,7 +24,6 @@ if (!$admin) {
     exit;
 }
 
-// 获取参数
 $candidate_id = filter_input(INPUT_POST, 'candidate_id', FILTER_VALIDATE_INT);
 $votes = filter_input(INPUT_POST, 'votes', FILTER_VALIDATE_INT);
 
@@ -36,7 +33,6 @@ if ($candidate_id === false || $candidate_id === null || $votes === false || $vo
 }
 
 try {
-    // 更新候选人票数
     $stmt = $pdo->prepare("
         UPDATE candidates 
         SET votes_count = ? 

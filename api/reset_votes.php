@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// 验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '未登录']);
@@ -21,7 +20,6 @@ if (!$stmt->fetch()) {
     exit;
 }
 
-// 重置指定候选人的票数
 $candidate_id = $_POST['candidate_id'] ?? '';
 
 if (!$candidate_id) {

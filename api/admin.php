@@ -42,13 +42,12 @@ $settings = $stmt->fetch();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f0f2f5;
             min-height: 100vh;
         }
         .navbar {
-            background-color: #1a1a1a;
-            padding: 1rem;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .navbar-brand {
             color: white !important;
@@ -59,35 +58,29 @@ $settings = $stmt->fetch();
             border-bottom: 2px solid #dee2e6;
         }
         .nav-tabs .nav-link {
-            color: #495057;
-            font-weight: 500;
-            border: none;
-            padding: 1rem 1.5rem;
-            transition: all 0.3s;
+            position: relative;
+            font-weight: 600;
         }
-        .nav-tabs .nav-link:hover {
-            border: none;
-            color: #0056b3;
-        }
-        .nav-tabs .nav-link.active {
-            color: #0056b3;
-            background: none;
-            border: none;
-            border-bottom: 2px solid #0056b3;
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #0056b3 0%, #00a0ff 100%);
         }
         .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
         .table {
             margin-bottom: 0;
         }
         .table thead th {
-            background-color: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 1rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            font-weight: 500;
         }
         .table tbody td {
             padding: 1rem;
@@ -111,19 +104,22 @@ $settings = $stmt->fetch();
             border-color: #dc3545;
         }
         .form-select {
-            border-radius: 6px;
-            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 0.7rem 1rem;
         }
         .form-control {
-            border-radius: 6px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 0.7rem 1rem;
         }
         .form-control:focus {
             border-color: #0056b3;
             box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
         }
         .modal-header {
-            background-color: #1a1a1a;
-            color: white;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            border-radius: 12px 12px 0 0;
         }
         .modal-header .btn-close {
             filter: invert(1) grayscale(100%) brightness(200%);
@@ -135,15 +131,19 @@ $settings = $stmt->fetch();
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .btn {
-            border-radius: 6px;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
         }
         .btn:hover {
             transform: translateY(-2px);
         }
         .btn-sm {
             padding: 0.25rem 0.5rem;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-left: 4px solid #0056b3;
         }
     </style>
 </head>
@@ -173,6 +173,32 @@ $settings = $stmt->fetch();
 
         <div class="tab-content">
             <div class="tab-pane active" id="users">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">总用户数</h6>
+                                <h3><?= count($users) ?></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">今日活跃用户</h6>
+                                <h3><?= $activeUsers ?? 0 ?></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <h6 class="text-muted">总投票数</h6>
+                                <h3><?= $totalVotes ?? 0 ?></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <h3>用户管理</h3>
                 <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">添加用户</button>
                 

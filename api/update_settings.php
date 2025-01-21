@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// 验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '未登录']);
@@ -23,10 +22,8 @@ if (!$admin) {
     exit;
 }
 
-// 获取JSON格式的POST数据
 $data = json_decode(file_get_contents('php://input'), true);
 
-// 验证必要字段
 if (empty($data['voting_name'])) {
     echo json_encode(['success' => false, 'message' => '投票系统名称不能为空']);
     exit;
@@ -60,7 +57,6 @@ try {
         $data['voting_start_time'],
         $data['voting_end_time'],
         (int)$data['show_results'],
-        // 重复参数用于UPDATE部分
         $data['voting_name'],
         (int)$data['max_votes_per_user'],
         (int)$data['voting_enabled'],
