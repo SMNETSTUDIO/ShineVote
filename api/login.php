@@ -3,6 +3,27 @@ require_once 'config.php';
 
 $error = '';
 
+// 检查数据库表是否存在
+try {
+    $tables = ['candidates', 'settings', 'user_tokens', 'users', 'votes'];
+    $missing_tables = [];
+    
+    foreach ($tables as $table) {
+        $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
+        $stmt->execute([$table]);
+        if (!$stmt->fetch()) {
+            $missing_tables[] = $table;
+        }
+    }
+    
+    if (!empty($missing_tables)) {
+        header('Location: /api/install.php');
+        exit;
+    }
+} catch(PDOException $e) {
+    $error = '数据库连接错误，请检查配置！';
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
