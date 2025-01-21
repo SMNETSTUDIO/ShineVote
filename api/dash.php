@@ -1,14 +1,12 @@
 <?php
 require_once 'config.php';
 
-// 验证token
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     header('Location: /api/login.php');
     exit;
 }
 
-// 通过token获取用户信息
 $stmt = $pdo->prepare("
     SELECT u.* 
     FROM users u 
@@ -24,23 +22,19 @@ if (!$user) {
     exit;
 }
 
-// 获取系统设置
 $stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
 $settings = $stmt->fetch();
 
-// 检查投票是否在有效时间范围内
 $now = new DateTime();
 $startTime = new DateTime($settings['voting_start_time']);
 $endTime = new DateTime($settings['voting_end_time']);
 $votingEnabled = $settings['voting_enabled'] && $now >= $startTime && $now <= $endTime;
 
-// 检查用户已投票数
 $stmt = $pdo->prepare("SELECT COUNT(*) as vote_count FROM votes WHERE user_id = ?");
 $stmt->execute([$user['id']]);
 $userVoteCount = $stmt->fetch()['vote_count'];
 $canVote = $userVoteCount < $settings['max_votes_per_user'];
 
-// 获取候选人和投票数据
 $stmt = $pdo->query("
     SELECT c.*, COUNT(v.id) as vote_count 
     FROM candidates c 
@@ -183,7 +177,6 @@ $candidates = $stmt->fetchAll();
     </div>
 
     <script>
-    // 初始化图表
     const chart = new Chart(document.getElementById('voteBarChart'), {
         type: 'bar',
         data: {
@@ -196,9 +189,9 @@ $candidates = $stmt->fetchAll();
             }]
         },
         options: {
-            indexAxis: 'y',  // 横向条形图
+            indexAxis: 'y',
             animation: {
-                duration: 1000  // 动画持续时间
+                duration: 1000
             },
             plugins: {
                 legend: {
@@ -213,35 +206,25 @@ $candidates = $stmt->fetchAll();
         }
     });
 
-    // 更新图表数据
     function updateChart(data) {
-        // 按票数排序
         data.sort((a, b) => b.vote_count - a.vote_count);
-        
-        // 更新图表数据
         chart.data.labels = data.map(c => c.name);
         chart.data.datasets[0].data = data.map(c => c.vote_count);
         chart.update();
     }
 
-    // 实时更新投票数据
     function updateVotes() {
         fetch('get_votes.php')
             .then(response => response.json())
             .then(data => {
-                // 更新票数显示
                 data.forEach(candidate => {
                     document.getElementById(`votes-${candidate.id}`).textContent = candidate.vote_count;
                 });
-                // 更新图表
                 updateChart(data);
             });
     }
 
-    // 每5秒更新一次数据
     setInterval(updateVotes, 500);
-
-    // 投票按钮点击事件
     document.querySelectorAll('.vote-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             if (!confirm('确定要投票给这位候选人吗？投票后将无法更改！')) {
@@ -260,12 +243,9 @@ $candidates = $stmt->fetchAll();
             .then(data => {
                 if (data.success) {
                     alert('投票成功！');
-                    // 更新提示信息
                     const alertDiv = document.getElementById('vote-status-alert');
                     alertDiv.className = 'alert alert-info';
                     alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> 您已经完成投票，感谢参与！';
-                    
-                    // 禁用所有投票按钮
                     document.querySelectorAll('.vote-btn').forEach(b => {
                         b.disabled = true;
                         b.textContent = '已投票';

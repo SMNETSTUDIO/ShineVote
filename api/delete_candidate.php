@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// 验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '未登录']);
@@ -21,7 +20,6 @@ if (!$stmt->fetch()) {
     exit;
 }
 
-// 删除候选人
 $id = $_POST['id'] ?? '';
 
 if (!$id) {
@@ -29,18 +27,13 @@ if (!$id) {
     exit;
 }
 
-// 开始事务
 $pdo->beginTransaction();
 
 try {
-    // 先删除相关的投票记录
     $stmt = $pdo->prepare("DELETE FROM votes WHERE candidate_id = ?");
     $stmt->execute([$id]);
-    
-    // 再删除候选人
     $stmt = $pdo->prepare("DELETE FROM candidates WHERE id = ?");
     $stmt->execute([$id]);
-    
     $pdo->commit();
     echo json_encode(['success' => true]);
 } catch (Exception $e) {

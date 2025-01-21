@@ -13,12 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password'])) {
-            // 生成并存储token
             $token = uniqid(rand(), true);
             $stmt = $pdo->prepare("INSERT INTO user_tokens (user_id, token) VALUES (?, ?)");
             $stmt->execute([$user['id'], $token]);
-            
-            // 设置cookie，过期时间7天
             setcookie('auth_token', $token, time() + (7 * 24 * 60 * 60), '/');
             
             if ($user['is_admin']) {

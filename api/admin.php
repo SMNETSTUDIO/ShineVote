@@ -1,14 +1,12 @@
 <?php
 require_once 'config.php';
 
-// 验证token
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     header('Location: login.php');
     exit;
 }
 
-// 通过token获取用户信息
 $stmt = $pdo->prepare("
     SELECT u.* 
     FROM users u 
@@ -26,8 +24,6 @@ if (!$admin) {
 
 $stmt = $pdo->query("SELECT * FROM users WHERE is_admin = 0");
 $users = $stmt->fetchAll();
-
-// 获取候选人数据，包括准确的票数统计
 $stmt = $pdo->query("
     SELECT c.*, 
            COALESCE((SELECT COUNT(*) FROM votes v WHERE v.candidate_id = c.id), 0) as vote_count 
@@ -35,7 +31,6 @@ $stmt = $pdo->query("
 ");
 $candidates = $stmt->fetchAll();
 
-// 在获取候选人数据之后添加获取系统设置的代码
 $stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
 $settings = $stmt->fetch();
 ?>
@@ -177,7 +172,6 @@ $settings = $stmt->fetch();
         </ul>
 
         <div class="tab-content">
-            <!-- 用户管理面板 -->
             <div class="tab-pane active" id="users">
                 <h3>用户管理</h3>
                 <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">添加用户</button>
@@ -214,7 +208,6 @@ $settings = $stmt->fetch();
                 </table>
             </div>
 
-            <!-- 候选人管理面板 -->
             <div class="tab-pane" id="candidates">
                 <h3>候选人管理</h3>
                 <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCandidateModal">添加候选人</button>
@@ -248,7 +241,6 @@ $settings = $stmt->fetch();
                 </table>
             </div>
 
-            <!-- 投票设置面板 -->
             <div class="tab-pane" id="settings">
                 <h3>投票设置</h3>
                 <div class="card p-3">
@@ -295,7 +287,6 @@ $settings = $stmt->fetch();
         </div>
     </div>
 
-    <!-- 添加候选人模态框 -->
     <div class="modal fade" id="addCandidateModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -316,7 +307,6 @@ $settings = $stmt->fetch();
         </div>
     </div>
 
-    <!-- 添加用户模态框 -->
     <div class="modal fade" id="addUserModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -341,7 +331,6 @@ $settings = $stmt->fetch();
         </div>
     </div>
 
-    <!-- 在body结束标签前添加重置票数的模态框 -->
     <div class="modal fade" id="resetVotesModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -359,7 +348,6 @@ $settings = $stmt->fetch();
         </div>
     </div>
 
-    <!-- 在其他模态框后添加修改密码模态框 -->
     <div class="modal fade" id="changePasswordModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -390,7 +378,6 @@ $settings = $stmt->fetch();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // 添加用户
     document.getElementById('addUserForm').onsubmit = function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -407,7 +394,6 @@ $settings = $stmt->fetch();
         });
     };
 
-    // 删除用户
     function deleteUser(userId) {
         if (confirm('确定要删除该用户吗？')) {
             fetch('delete_user.php', {
@@ -426,7 +412,6 @@ $settings = $stmt->fetch();
         }
     }
 
-    // 重置密码
     function resetPassword(userId) {
         const newPassword = prompt('请输入新密码：');
         if (newPassword) {
@@ -446,7 +431,6 @@ $settings = $stmt->fetch();
         }
     }
 
-    // 更新用户权限
     function updateUserRole(userId, isAdmin) {
         fetch('update_user_role.php', {
             method: 'POST',
@@ -463,7 +447,6 @@ $settings = $stmt->fetch();
         });
     }
 
-    // 更新候选人名称
     function updateCandidateName(id, name) {
         fetch('update_candidate.php', {
             method: 'POST',
@@ -480,13 +463,11 @@ $settings = $stmt->fetch();
         });
     }
 
-    // 重置候选人票数
     function resetVotes(candidateId) {
         document.getElementById('resetVotesCandidateId').value = candidateId;
         new bootstrap.Modal(document.getElementById('resetVotesModal')).show();
     }
 
-    // 重置所有票数
     function resetAllVotes() {
         if (confirm('确定要重置所有候选人的票数吗？')) {
             fetch('reset_all_votes.php', {
@@ -501,7 +482,6 @@ $settings = $stmt->fetch();
         }
     }
 
-    // 删除候选人
     function deleteCandidate(id) {
         if (confirm('确定要删除该候选人吗？')) {
             fetch('delete_candidate.php', {
@@ -520,7 +500,6 @@ $settings = $stmt->fetch();
         }
     }
 
-    // 添加候选人
     document.getElementById('addCandidateForm').onsubmit = function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -537,7 +516,6 @@ $settings = $stmt->fetch();
         });
     };
 
-    // 处理重置票数表单提交
     document.getElementById('resetVotesForm').onsubmit = function(e) {
         e.preventDefault();
         const candidateId = document.getElementById('resetVotesCandidateId').value;
@@ -562,12 +540,10 @@ $settings = $stmt->fetch();
         });
     };
 
-    // 添加修改密码的处理函数
     document.getElementById('changePasswordForm').onsubmit = function(e) {
         e.preventDefault();
         const formData = new FormData(this);
         
-        // 验证两次输入的密码是否一致
         if (formData.get('new_password') !== formData.get('confirm_password')) {
             alert('两次输入的新密码不一致');
             return;
@@ -592,7 +568,6 @@ $settings = $stmt->fetch();
         });
     };
 
-    // 添加更新设置的函数
     function updateSettings() {
         const settings = {
             voting_name: document.getElementById('votingSystemName').value,

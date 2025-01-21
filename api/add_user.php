@@ -1,14 +1,12 @@
 <?php
 require_once 'config.php';
 
-// 通过token验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '无权限']);
     exit;
 }
 
-// 验证管理员权限
 $stmt = $pdo->prepare("
     SELECT u.* 
     FROM users u 
@@ -24,13 +22,11 @@ if (!$admin) {
     exit;
 }
 
-// 验证请求方法
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => '无效的请求方法']);
     exit;
 }
 
-// 获取并验证输入
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
@@ -39,7 +35,6 @@ if (empty($username) || empty($password)) {
     exit;
 }
 
-// 检查用户名是否已存在
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
 $stmt->execute([$username]);
 if ($stmt->fetchColumn() > 0) {
@@ -48,7 +43,6 @@ if ($stmt->fetchColumn() > 0) {
 }
 
 try {
-    // 创建新用户
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("
         INSERT INTO users (username, password, is_admin, created_at) 

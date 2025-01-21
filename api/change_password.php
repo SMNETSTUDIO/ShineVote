@@ -1,14 +1,12 @@
 <?php
 require_once 'config.php';
 
-// 验证token
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
     echo json_encode(['success' => false, 'message' => '未登录']);
     exit;
 }
 
-// 获取当前用户信息
 $stmt = $pdo->prepare("
     SELECT u.* 
     FROM users u 
@@ -24,14 +22,12 @@ if (!$user) {
     exit;
 }
 
-// 验证当前密码
 $current_password = $_POST['current_password'] ?? '';
 if (!password_verify($current_password, $user['password'])) {
     echo json_encode(['success' => false, 'message' => '当前密码错误']);
     exit;
 }
 
-// 更新新密码
 $new_password = $_POST['new_password'] ?? '';
 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
