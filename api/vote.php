@@ -66,7 +66,7 @@ try {
     // 更新候选人票数
     $stmt = $pdo->prepare("
         UPDATE candidates 
-        SET votes_count = votes_count + 1 
+        SET vote_count = vote_count + 1 
         WHERE id = ?
     ");
     
