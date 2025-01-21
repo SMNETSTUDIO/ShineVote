@@ -120,15 +120,10 @@ $candidates = $stmt->fetchAll();
     </nav>
 
     <div class="container">
-        <?php if ($userVote): ?>
-            <div class="alert alert-info">
-                <i class="fas fa-check-circle"></i> 您已经完成投票，感谢参与！
-            </div>
-        <?php else: ?>
-            <div class="alert alert-warning">
-                <i class="fas fa-exclamation-circle"></i> 您还未投票，请为您支持的候选人投票！
-            </div>
-        <?php endif; ?>
+        <div id="vote-status-alert" class="alert <?= $userVote ? 'alert-info' : 'alert-warning' ?>">
+            <i class="fas fa-<?= $userVote ? 'check' : 'exclamation' ?>-circle"></i>
+            <?= $userVote ? '您已经完成投票，感谢参与！' : '您还未投票，请为您支持的候选人投票！' ?>
+        </div>
 
         <div class="card mb-4">
             <div class="card-header">实时投票结果</div>
@@ -234,6 +229,11 @@ $candidates = $stmt->fetchAll();
             .then(data => {
                 if (data.success) {
                     alert('投票成功！');
+                    // 更新提示信息
+                    const alertDiv = document.getElementById('vote-status-alert');
+                    alertDiv.className = 'alert alert-info';
+                    alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> 您已经完成投票，感谢参与！';
+                    
                     // 禁用所有投票按钮
                     document.querySelectorAll('.vote-btn').forEach(b => {
                         b.disabled = true;
