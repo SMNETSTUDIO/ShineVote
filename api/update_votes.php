@@ -40,10 +40,13 @@ try {
     $stmt = $pdo->prepare("DELETE FROM votes WHERE candidate_id = ?");
     $stmt->execute([$candidate_id]);
     
+    // 获取系统管理员用户ID
+    $admin_id = $admin['id'];
+    
     // 插入新的票数
     $stmt = $pdo->prepare("INSERT INTO votes (candidate_id, user_id) VALUES (?, ?)");
     for ($i = 0; $i < $votes; $i++) {
-        $stmt->execute([$candidate_id, 0]); // 使用0作为系统投票的user_id
+        $stmt->execute([$candidate_id, $admin_id]); // 使用管理员ID代替0
     }
     
     // 提交事务
