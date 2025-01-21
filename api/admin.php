@@ -232,7 +232,6 @@ $candidates = $stmt->fetchAll();
                             </td>
                             <td><?= $candidate['vote_count'] ?? 0 ?></td>
                             <td>
-                                <button class="btn btn-sm btn-info" onclick="editVotes(<?= $candidate['id'] ?>, <?= $candidate['vote_count'] ?>)">修改票数</button>
                                 <button class="btn btn-sm btn-info" onclick="resetVotes(<?= $candidate['id'] ?>)">重置票数</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteCandidate(<?= $candidate['id'] ?>)">删除</button>
                             </td>
@@ -300,22 +299,18 @@ $candidates = $stmt->fetchAll();
         </div>
     </div>
 
-    <!-- 在body结束标签前添加修改票数的模态框 -->
-    <div class="modal fade" id="editVotesModal">
+    <!-- 在body结束标签前添加重置票数的模态框 -->
+    <div class="modal fade" id="resetVotesModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">修改票数</h5>
+                    <h5 class="modal-title">重置票数</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editVotesForm">
-                        <input type="hidden" name="candidate_id" id="editVotesCandidateId">
-                        <div class="mb-3">
-                            <label>票数</label>
-                            <input type="number" name="votes" class="form-control" id="editVotesCount" min="0" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">保存</button>
+                    <form id="resetVotesForm">
+                        <input type="hidden" name="candidate_id" id="resetVotesCandidateId">
+                        <button type="submit" class="btn btn-primary">重置</button>
                     </form>
                 </div>
             </div>
@@ -416,21 +411,8 @@ $candidates = $stmt->fetchAll();
 
     // 重置候选人票数
     function resetVotes(candidateId) {
-        if (confirm('确定要重置该候选人的票数吗？')) {
-            fetch('reset_votes.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `candidate_id=${candidateId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                }
-            });
-        }
+        document.getElementById('resetVotesCandidateId').value = candidateId;
+        new bootstrap.Modal(document.getElementById('resetVotesModal')).show();
     }
 
     // 重置所有票数
@@ -484,36 +466,28 @@ $candidates = $stmt->fetchAll();
         });
     };
 
-    // 修改票数
-    function editVotes(candidateId, currentVotes) {
-        document.getElementById('editVotesCandidateId').value = candidateId;
-        document.getElementById('editVotesCount').value = currentVotes;
-        new bootstrap.Modal(document.getElementById('editVotesModal')).show();
-    }
-
-    // 处理修改票数表单提交
-    document.getElementById('editVotesForm').onsubmit = function(e) {
+    // 处理重置票数表单提交
+    document.getElementById('resetVotesForm').onsubmit = function(e) {
         e.preventDefault();
-        const candidateId = document.getElementById('editVotesCandidateId').value;
-        const votes = document.getElementById('editVotesCount').value;
+        const candidateId = document.getElementById('resetVotesCandidateId').value;
         
-        fetch('update_votes.php', {
+        fetch('reset_votes.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `candidate_id=${candidateId}&votes=${votes}`
+            body: `candidate_id=${candidateId}`
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 location.reload();
             } else {
-                alert('修改票数失败：' + (data.message || '未知错误'));
+                alert('重置票数失败：' + (data.message || '未知错误'));
             }
         })
         .catch(error => {
-            alert('修改票数失败：' + error);
+            alert('重置票数失败：' + error);
         });
     };
     </script>
