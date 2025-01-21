@@ -494,11 +494,15 @@ $candidates = $stmt->fetchAll();
     // 处理修改票数表单提交
     document.getElementById('editVotesForm').onsubmit = function(e) {
         e.preventDefault();
-        const formData = new FormData(this);
+        const candidateId = document.getElementById('editVotesCandidateId').value;
+        const votes = document.getElementById('editVotesCount').value;
         
         fetch('update_votes.php', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `candidate_id=${candidateId}&votes=${votes}`
         })
         .then(response => response.json())
         .then(data => {
@@ -507,6 +511,9 @@ $candidates = $stmt->fetchAll();
             } else {
                 alert('修改票数失败：' + (data.message || '未知错误'));
             }
+        })
+        .catch(error => {
+            alert('修改票数失败：' + error);
         });
     };
     </script>

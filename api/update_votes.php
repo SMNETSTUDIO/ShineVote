@@ -50,6 +50,16 @@ try {
     if ($stmt->rowCount() === 0) {
         throw new Exception('候选人不存在');
     }
+
+    // 同时更新votes表中的记录
+    $stmt = $pdo->prepare("DELETE FROM votes WHERE candidate_id = ?");
+    $stmt->execute([$candidate_id]);
+
+    // 插入新的投票记录
+    for ($i = 0; $i < $votes; $i++) {
+        $stmt = $pdo->prepare("INSERT INTO votes (candidate_id) VALUES (?)");
+        $stmt->execute([$candidate_id]);
+    }
     
     // 提交事务
     $pdo->commit();
