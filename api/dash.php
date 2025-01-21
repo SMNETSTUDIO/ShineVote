@@ -73,13 +73,20 @@ $candidates = $stmt->fetchAll();
         }
         .card-header {
             background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
-            border-radius: 12px 12px 0 0;
-            padding: 1rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+            border: none;
+        }
+        .card-body {
+            padding: 1.5rem;
+            background: white;
         }
         .btn-primary {
             background: linear-gradient(135deg, #0056b3 0%, #0088ff 100%);
             border: none;
             font-weight: 500;
+            color: white !important;
         }
         .btn-primary:hover {
             background-color: #003d82;
@@ -94,10 +101,10 @@ $candidates = $stmt->fetchAll();
             color: #fff;
         }
         .vote-count {
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #0056b3 0%, #0088ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0056b3;
+            margin-bottom: 1rem;
         }
         .alert {
             border-radius: 12px;
@@ -108,9 +115,23 @@ $candidates = $stmt->fetchAll();
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .chart-container {
-            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-            border-radius: 12px;
+            background: white;
+            border-radius: 16px;
             padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .card-text {
+            color: #2c3e50;
+        }
+        .btn-primary[disabled] {
+            background: #6c757d;
+            color: rgba(255,255,255,0.8) !important;
+            opacity: 0.8;
+        }
+        #votes-count {
+            color: #2c3e50;
+            font-weight: bold;
         }
     </style>
 </head>
