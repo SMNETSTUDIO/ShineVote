@@ -1,6 +1,9 @@
 <?php
 require_once 'config.php';
 
+// 设置响应头
+header('Content-Type: application/json');
+
 // 验证管理员权限
 $auth_token = $_COOKIE['auth_token'] ?? '';
 if (!$auth_token) {
@@ -48,7 +51,9 @@ try {
         throw new Exception('候选人不存在');
     }
     
-    echo json_encode(['success' => true]);
+    echo json_encode(['success' => true, 'message' => '更新成功']);
+    exit;
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    exit;
 }
