@@ -33,10 +33,7 @@ if ($candidate_id === false || $candidate_id === null || $votes === false || $vo
 }
 
 try {
-    // 开始事务
-    $pdo->beginTransaction();
-    
-    // 验证候选人是否存在并更新票数
+    // 更新候选人票数
     $stmt = $pdo->prepare("
         UPDATE candidates 
         SET votes_count = ? 
@@ -50,23 +47,8 @@ try {
     if ($stmt->rowCount() === 0) {
         throw new Exception('候选人不存在');
     }
-
-    // 同时更新votes表中的记录
-    $stmt = $pdo->prepare("DELETE FROM votes WHERE candidate_id = ?");
-    $stmt->execute([$candidate_id]);
-
-    // 插入新的投票记录
-    for ($i = 0; $i < $votes; $i++) {
-        $stmt = $pdo->prepare("INSERT INTO votes (candidate_id) VALUES (?)");
-        $stmt->execute([$candidate_id]);
-    }
-    
-    // 提交事务
-    $pdo->commit();
     
     echo json_encode(['success' => true]);
 } catch (Exception $e) {
-    // 发生错误时回滚
-    $pdo->rollBack();
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
