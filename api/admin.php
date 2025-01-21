@@ -34,6 +34,10 @@ $stmt = $pdo->query("
     FROM candidates c
 ");
 $candidates = $stmt->fetchAll();
+
+// 在获取候选人数据之后添加获取系统设置的代码
+$stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
+$settings = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -249,7 +253,42 @@ $candidates = $stmt->fetchAll();
                 <h3>投票设置</h3>
                 <div class="card p-3">
                     <div class="mb-3">
-                        <button class="btn btn-danger" onclick="resetAllVotes()">重置所有票数</button>
+                        <label class="form-label">投票系统名称</label>
+                        <input type="text" class="form-control" id="votingSystemName" 
+                               value="<?= htmlspecialchars($settings['voting_name'] ?? '投票系统') ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">每人最多可投票数</label>
+                        <input type="number" class="form-control" id="maxVotesPerUser" min="1"
+                               value="<?= htmlspecialchars($settings['max_votes_per_user'] ?? '1') ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">投票状态</label>
+                        <select class="form-select" id="votingStatus">
+                            <option value="1" <?= ($settings['voting_enabled'] ?? 1) ? 'selected' : '' ?>>开启投票</option>
+                            <option value="0" <?= ($settings['voting_enabled'] ?? 1) ? '' : 'selected' ?>>暂停投票</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">投票开始时间</label>
+                        <input type="datetime-local" class="form-control" id="votingStartTime"
+                               value="<?= date('Y-m-d\TH:i', strtotime($settings['voting_start_time'] ?? 'now')) ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">投票结束时间</label>
+                        <input type="datetime-local" class="form-control" id="votingEndTime"
+                               value="<?= date('Y-m-d\TH:i', strtotime($settings['voting_end_time'] ?? '+7 days')) ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">显示实时票数</label>
+                        <select class="form-select" id="showRealTimeResults">
+                            <option value="1" <?= ($settings['show_results'] ?? 1) ? 'selected' : '' ?>>显示</option>
+                            <option value="0" <?= ($settings['show_results'] ?? 1) ? '' : 'selected' ?>>隐藏</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" onclick="updateSettings()">保存设置</button>
+                        <button class="btn btn-danger ms-2" onclick="resetAllVotes()">重置所有票数</button>
                     </div>
                 </div>
             </div>
@@ -552,6 +591,38 @@ $candidates = $stmt->fetchAll();
             alert('密码修改失败：' + error);
         });
     };
+
+    // 添加更新设置的函数
+    function updateSettings() {
+        const settings = {
+            voting_name: document.getElementById('votingSystemName').value,
+            max_votes_per_user: document.getElementById('maxVotesPerUser').value,
+            voting_enabled: document.getElementById('votingStatus').value,
+            voting_start_time: document.getElementById('votingStartTime').value,
+            voting_end_time: document.getElementById('votingEndTime').value,
+            show_results: document.getElementById('showRealTimeResults').value
+        };
+        
+        fetch('update_settings.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(settings)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('设置已更新');
+                document.querySelector('.navbar-brand').textContent = settings.voting_name;
+            } else {
+                alert('更新设置失败：' + (data.message || '未知错误'));
+            }
+        })
+        .catch(error => {
+            alert('更新设置失败：' + error);
+        });
+    }
     </script>
 </body>
 </html> 
