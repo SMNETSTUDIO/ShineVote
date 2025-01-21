@@ -24,10 +24,21 @@ if (!$user) {
     exit;
 }
 
-// 检查用户是否已经投票
-$stmt = $pdo->prepare("SELECT candidate_id FROM votes WHERE user_id = ?");
+// 获取系统设置
+$stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
+$settings = $stmt->fetch();
+
+// 检查投票是否在有效时间范围内
+$now = new DateTime();
+$startTime = new DateTime($settings['voting_start_time']);
+$endTime = new DateTime($settings['voting_end_time']);
+$votingEnabled = $settings['voting_enabled'] && $now >= $startTime && $now <= $endTime;
+
+// 检查用户已投票数
+$stmt = $pdo->prepare("SELECT COUNT(*) as vote_count FROM votes WHERE user_id = ?");
 $stmt->execute([$user['id']]);
-$userVote = $stmt->fetch();
+$userVoteCount = $stmt->fetch()['vote_count'];
+$canVote = $userVoteCount < $settings['max_votes_per_user'];
 
 // 获取候选人和投票数据
 $stmt = $pdo->query("
@@ -43,7 +54,7 @@ $candidates = $stmt->fetchAll();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>投票系统</title>
+    <title><?= htmlspecialchars($settings['voting_name']) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -111,7 +122,7 @@ $candidates = $stmt->fetchAll();
 <body>
     <nav class="navbar">
         <div class="container">
-            <span class="navbar-brand">投票系统</span>
+            <span class="navbar-brand"><?= htmlspecialchars($settings['voting_name']) ?></span>
             <div class="user-info">
                 <span class="me-3">欢迎，<?= htmlspecialchars($user['username']) ?></span>
                 <a href="logout.php" class="btn btn-outline-danger">退出登录</a>
@@ -120,17 +131,37 @@ $candidates = $stmt->fetchAll();
     </nav>
 
     <div class="container">
-        <div id="vote-status-alert" class="alert <?= $userVote ? 'alert-info' : 'alert-warning' ?>">
-            <i class="fas fa-<?= $userVote ? 'check' : 'exclamation' ?>-circle"></i>
-            <?= $userVote ? '您已经完成投票，感谢参与！' : '您还未投票，请为您支持的候选人投票！' ?>
+        <div id="vote-status-alert" class="alert 
+            <?php if (!$votingEnabled): ?>
+                alert-danger
+            <?php elseif ($userVoteCount >= $settings['max_votes_per_user']): ?>
+                alert-info
+            <?php else: ?>
+                alert-warning
+            <?php endif; ?>">
+            <?php if (!$votingEnabled): ?>
+                <?php if (!$settings['voting_enabled']): ?>
+                    投票已暂停
+                <?php elseif ($now < $startTime): ?>
+                    投票还未开始，开始时间：<?= $startTime->format('Y-m-d H:i') ?>
+                <?php else: ?>
+                    投票已结束
+                <?php endif; ?>
+            <?php elseif ($userVoteCount >= $settings['max_votes_per_user']): ?>
+                您已完成所有可投票数（<?= $settings['max_votes_per_user'] ?>票），感谢参与！
+            <?php else: ?>
+                您还可以投<?= $settings['max_votes_per_user'] - $userVoteCount ?>票
+            <?php endif; ?>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header">实时投票结果</div>
-            <div class="card-body chart-container">
-                <canvas id="voteBarChart" style="height: 300px;"></canvas>
+        <?php if ($settings['show_results'] || $userVoteCount >= $settings['max_votes_per_user']): ?>
+            <div class="card mb-4">
+                <div class="card-header">实时投票结果</div>
+                <div class="card-body chart-container">
+                    <canvas id="voteBarChart" style="height: 300px;"></canvas>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
         
         <div class="row">
             <?php foreach ($candidates as $candidate): ?>
@@ -141,8 +172,8 @@ $candidates = $stmt->fetchAll();
                         <p class="card-text vote-count">当前票数: <span id="votes-<?= $candidate['id'] ?>"><?= $candidate['vote_count'] ?></span></p>
                         <button class="btn btn-primary vote-btn w-100" 
                                 data-id="<?= $candidate['id'] ?>"
-                                <?= $userVote ? 'disabled' : '' ?>>
-                            <?= $userVote ? '已投票' : '投票' ?>
+                                <?= $userVoteCount >= $settings['max_votes_per_user'] ? 'disabled' : '' ?>>
+                            <?= $userVoteCount >= $settings['max_votes_per_user'] ? '已投票' : '投票' ?>
                         </button>
                     </div>
                 </div>

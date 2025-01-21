@@ -55,6 +55,41 @@ if (!$stmt->fetch()) {
     exit;
 }
 
+// 获取系统设置
+$stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
+$settings = $stmt->fetch();
+
+// 检查投票是否启用
+if (!$settings['voting_enabled']) {
+    echo json_encode(['success' => false, 'message' => '投票已暂停']);
+    exit;
+}
+
+// 检查是否在投票时间范围内
+$now = new DateTime();
+$startTime = new DateTime($settings['voting_start_time']);
+$endTime = new DateTime($settings['voting_end_time']);
+
+if ($now < $startTime) {
+    echo json_encode(['success' => false, 'message' => '投票还未开始']);
+    exit;
+}
+
+if ($now > $endTime) {
+    echo json_encode(['success' => false, 'message' => '投票已结束']);
+    exit;
+}
+
+// 检查用户投票次数
+$stmt = $pdo->prepare("SELECT COUNT(*) as vote_count FROM votes WHERE user_id = ?");
+$stmt->execute([$user['id']]);
+$userVoteCount = $stmt->fetch()['vote_count'];
+
+if ($userVoteCount >= $settings['max_votes_per_user']) {
+    echo json_encode(['success' => false, 'message' => '您已达到最大投票次数']);
+    exit;
+}
+
 try {
     // 开始事务
     $pdo->beginTransaction();
