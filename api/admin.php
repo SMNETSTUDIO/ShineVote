@@ -30,11 +30,10 @@ $stmt = $pdo->query("
     FROM candidates c
 ");
 $candidates = $stmt->fetchAll();
-
 $stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
 $settings = $stmt->fetch();
-
-// 获取今日活跃用户数
+$stmt = $pdo->query("SELECT COUNT(*) as total_users FROM users WHERE is_admin = 0");
+$totalUsers = $stmt->fetch()['total_users'];
 $today = date('Y-m-d');
 $stmt = $pdo->prepare("
     SELECT COUNT(DISTINCT user_id) as active_users 
@@ -43,8 +42,6 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$today]);
 $activeUsers = $stmt->fetch()['active_users'];
-
-// 获取总投票数
 $stmt = $pdo->query("SELECT COUNT(*) as total_votes FROM votes");
 $totalVotes = $stmt->fetch()['total_votes'];
 ?>
@@ -255,7 +252,7 @@ $totalVotes = $stmt->fetch()['total_votes'];
                         <div class="card stats-card">
                             <div class="card-body">
                                 <h6 class="text-muted">总用户数</h6>
-                                <h3><?= count($users) ?></h3>
+                                <h3><?= $totalUsers ?></h3>
                             </div>
                         </div>
                     </div>
