@@ -121,12 +121,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .mb-4 {
             margin-bottom: 1.5rem !important;
         }
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             .container {
-                padding: 0 1rem;
+                padding: 1rem;
             }
+            
             .system-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .card {
+                margin: 0 0.5rem;
+            }
+            
+            .card-header {
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem 1rem;
+            }
+            
+            .form-control {
+                padding: 0.6rem 1rem;
+            }
+            
+            .btn-primary {
+                padding: 0.6rem;
+            }
+            
+            .alert {
+                padding: 0.8rem 1rem;
+                margin-bottom: 1rem;
             }
         }
     </style>

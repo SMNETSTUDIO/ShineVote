@@ -210,13 +210,66 @@ $totalVotes = $stmt->fetch()['total_votes'];
         }
         @media (max-width: 768px) {
             .container {
-                padding: 0 1rem;
+                padding: 0.5rem;
             }
+            
+            .navbar {
+                padding: 0.5rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .nav-tabs {
+                margin-top: 1rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
             .nav-tabs .nav-link {
-                padding: 0.75rem 1rem;
+                padding: 0.8rem 1rem;
+                white-space: nowrap;
             }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+            
             .stats-card {
                 margin-bottom: 1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 0.8rem;
+                min-width: 120px;
+            }
+            
+            .btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .form-control,
+            .form-select {
+                padding: 0.5rem 0.8rem;
             }
         }
     </style>

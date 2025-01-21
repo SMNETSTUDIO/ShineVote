@@ -133,6 +133,53 @@ $candidates = $stmt->fetchAll();
             color: #2c3e50;
             font-weight: bold;
         }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .user-info {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.5rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .card-header {
+                padding: 0.8rem 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .vote-count {
+                font-size: 1.2rem;
+            }
+            
+            .alert {
+                padding: 0.8rem 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .chart-container {
+                padding: 0.8rem;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
