@@ -152,7 +152,10 @@ $candidates = $stmt->fetchAll();
     <nav class="navbar">
         <div class="container">
             <span class="navbar-brand">投票系统管理后台</span>
-            <a href="logout.php" class="btn btn-outline-light">退出登录</a>
+            <div>
+                <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">修改密码</button>
+                <a href="logout.php" class="btn btn-outline-light">退出登录</a>
+            </div>
         </div>
     </nav>
 
@@ -311,6 +314,35 @@ $candidates = $stmt->fetchAll();
                     <form id="resetVotesForm">
                         <input type="hidden" name="candidate_id" id="resetVotesCandidateId">
                         <button type="submit" class="btn btn-primary">重置</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 在其他模态框后添加修改密码模态框 -->
+    <div class="modal fade" id="changePasswordModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">修改密码</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label>当前密码</label>
+                            <input type="password" name="current_password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>新密码</label>
+                            <input type="password" name="new_password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>确认新密码</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">修改</button>
                     </form>
                 </div>
             </div>
@@ -488,6 +520,36 @@ $candidates = $stmt->fetchAll();
         })
         .catch(error => {
             alert('重置票数失败：' + error);
+        });
+    };
+
+    // 添加修改密码的处理函数
+    document.getElementById('changePasswordForm').onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        // 验证两次输入的密码是否一致
+        if (formData.get('new_password') !== formData.get('confirm_password')) {
+            alert('两次输入的新密码不一致');
+            return;
+        }
+        
+        fetch('change_password.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('密码修改成功');
+                this.reset();
+                bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            } else {
+                alert(data.message || '密码修改失败');
+            }
+        })
+        .catch(error => {
+            alert('密码修改失败：' + error);
         });
     };
     </script>
