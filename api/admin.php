@@ -27,8 +27,12 @@ if (!$admin) {
 $stmt = $pdo->query("SELECT * FROM users WHERE is_admin = 0");
 $users = $stmt->fetchAll();
 
-// 获取候选人数据
-$stmt = $pdo->query("SELECT * FROM candidates");
+// 获取候选人数据，包括准确的票数统计
+$stmt = $pdo->query("
+    SELECT c.*, 
+           COALESCE((SELECT COUNT(*) FROM votes v WHERE v.candidate_id = c.id), 0) as vote_count 
+    FROM candidates c
+");
 $candidates = $stmt->fetchAll();
 ?>
 
